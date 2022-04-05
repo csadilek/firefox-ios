@@ -16,13 +16,13 @@ stages:
       - build_and_test_2: {}
 workflows:
   configure_build:
-    steps:
     #- deploy-to-bitrise-io@2: { }
     before_run:
     - 1_git_clone_and_post_clone
     - 2_certificate_and_profile
     - 3_provisioning_and_npm_installation
     # - 4_A_xcode_build_and_test_Fennec
+    steps:
     - activate-ssh-key@4:
         run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
     - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
@@ -46,7 +46,7 @@ workflows:
                 
             xcodebuild \
             -scheme "Fennec_Enterprise_XCUITests" \
-            -project "Client.xcworkspace" \
+            -project "Client.xcodeproj" \
             -sdk iphonesimulator \                
             -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" \
             -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" \
