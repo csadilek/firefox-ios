@@ -24,7 +24,7 @@ workflows:
      - 3_provisioning_and_npm_installation
      - 4_A_xcode_build_and_test_Fennec
   build_and_test_1:
-     steps:
+    steps:
     - xcode-test@3.1:
         inputs:
         - scheme: Fennec_Enterprise_XCUITests
