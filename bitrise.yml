@@ -13,8 +13,8 @@ stages:
     - pipeline_test_shards: {}
   stage_2:
     workflows:
-    - tests_1: {}
-    - tests_2: {}
+    - RunUnitTests: {}
+    - RunSmokeXCUITests: {}
   stage_3:
     workflows:
     - deploy: {}
