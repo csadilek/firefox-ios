@@ -19,6 +19,12 @@ stages:
     workflows:
     - deploy: {}
 workflows:
+  pipeline_test_shards:
+    - script@1.1:
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            echo "hello"
   1_git_clone_and_post_clone:
     steps:
     - activate-ssh-key@4:
