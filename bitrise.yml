@@ -9,7 +9,7 @@ pipelines:
 stages:
   stage_1:
     workflows:
-      - RunUnitTests: 
+      - RunUnitTests: {}
   stage_2:
     workflows:
       - RunUITests: {}
@@ -976,3 +976,8 @@ trigger_map:
   workflow: RunUnitTests
 - pull_request_target_branch: epic-branch/*
   workflow: RunUnitTests
+- push_branch: irios/test-bitrise-shards
+  pipelines: pipeline_multiple_shards
+- pull_request_target_branch: irios/test-bitrise-shards
+  pipelines: pipeline_multiple_shards
+
