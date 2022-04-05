@@ -1,41 +1,16 @@
-format_version: '11'
+format_version: '8'
 default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
 project_type: ios
 pipelines:
   pipeline_multiple_shards:
     stages:
-    - stage_1: {}
-    - stage_2: {}
-    - stage_3: {}
+      - stage_1: {}
 stages:
   stage_1:
     workflows:
-    - pipeline_test_shards: {}
-  stage_2:
-    workflows:
-    - RunUnitTests: {}
-    - RunSmokeXCUITests: {}
-  stage_3:
-    workflows:
-    - deploy: {}
+      - RunUnitTests: {}
+
 workflows:
-  pipeline_test_shards:
-    steps:
-      - activate-ssh-key@4:
-          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-      - git-clone@6: {}
-      - cocoapods-install@2: {}
-      - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
-          title: Bitrise Test Plan Sharder
-          inputs:
-            - xcode_project: Client.xcodeproj
-            - target: Fennec_Enterprise_XCUITests
-            - shards: '2'
-            - scheme: Fennec_Enterprise_XCUITests
-            - test_plan: SmokeXCUITests.xctestplan
-            - debug_mode: 'true'
-            - test_path: ''
-            - file_type: ".swift"
   1_git_clone_and_post_clone:
     steps:
     - activate-ssh-key@4:
