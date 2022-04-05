@@ -73,10 +73,10 @@ workflows:
   build_and_test_1:
     steps:
     - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
-          title: Pull artifacts
-          inputs:
-            - verbose: true
-            - artifact_sources: stage_1.*
+        title: Pull artifacts
+        inputs:
+        - verbose: true
+        - artifact_sources: stage_1.*
     - script@1.1:
         title: Unzip
         inputs:
