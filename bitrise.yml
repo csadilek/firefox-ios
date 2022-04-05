@@ -9,11 +9,59 @@ pipelines:
 stages:
   stage_1:
     workflows:
-      - RunUnitTests: {}
+      - configure_build: {}
   stage_2:
     workflows:
-      - RunUITests: {}
+      - build_and_test_1: {}
+      - build_and_test_2: {}
 workflows:
+  configure_build:
+    steps:
+    - xcode-build-for-simulator@0.11:
+        inputs:
+        - xcodebuild_options: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        - scheme: Fennec_Enterprise_XCUITests
+    before_run:
+    - 1_git_clone_and_post_clone
+    - 2_certificate_and_profile
+    - 3_provisioning_and_npm_installation
+    - 4_A_xcode_build_and_test_Fennec
+  build_and_test_1:
+    steps:
+    - xcode-test@3.1:
+        inputs:
+        - scheme: Fennec_Enterprise_XCUITests
+        - xcodebuild_test_options: "-testPlan SmokeXCUITests"
+    - deploy-to-bitrise-io@2: { }
+    build_and_test_2:
+    steps:
+    - xcode-test@3.1:
+        inputs:
+        - scheme: Fennec_Enterprise_XCUITests
+        - xcodebuild_test_options: "-testPlan Smoketest2"
+    - deploy-to-bitrise-io@2: { }
+  build_and_test_2:
+    steps:
+    - xcode-build-for-simulator@0.11:
+        inputs:
+        - xcodebuild_options: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        - scheme: Fennec_Enterprise_XCUITests
+    - xcode-test@3.1:
+        inputs:
+        - scheme: Fennec_Enterprise_XCUITests
+        - xcodebuild_test_options: "-testPlan Smoketest2"
+    - deploy-to-bitrise-io@2: { }
+    build_and_test_2:
+    steps:
+    - xcode-build-for-simulator@0.11:
+        inputs:
+        - xcodebuild_options: CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        - scheme: Fennec_Enterprise_XCUITests
+    - xcode-test@3.1:
+        inputs:
+        - scheme: Fennec_Enterprise_XCUITests
+        - xcodebuild_test_options: "-testPlan Smoketest2"
+    - deploy-to-bitrise-io@2: { }
   1_git_clone_and_post_clone:
     steps:
     - activate-ssh-key@4:
