@@ -12,17 +12,17 @@ stages:
       - configure_build: {}
   stage_2:
     workflows:
-      - test_1: {}
-      - test_2: {}
+      - build_and_test_1: {}
+      - build_and_test_2: {}
 workflows:
   configure_build:
     steps:
     - deploy-to-bitrise-io@2: { }
     before_run:
-    - 1_git_clone_and_post_clone
-    - 2_certificate_and_profile
-    - 3_provisioning_and_npm_installation
-    - 4_A_xcode_build_and_test_Fennec
+     - 1_git_clone_and_post_clone
+     - 2_certificate_and_profile
+     - 3_provisioning_and_npm_installation
+     - 4_A_xcode_build_and_test_Fennec
   test_1:
     envs:
       - opts:
