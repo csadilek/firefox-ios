@@ -973,11 +973,6 @@ trigger_map:
 - push_branch: v99.0
   workflow: SPM_Deploy_Prod_Beta
 - pull_request_target_branch: main
-  workflow: RunUnitTests
+  pipelines: pipeline_multiple_shards
 - pull_request_target_branch: epic-branch/*
   workflow: RunUnitTests
-- push_branch: irios/test-bitrise-shards
-  pipelines: pipeline_multiple_shards
-- pull_request_target_branch: irios/test-bitrise-shards
-  pipelines: pipeline_multiple_shards
-
