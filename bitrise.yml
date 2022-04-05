@@ -23,20 +23,6 @@ workflows:
      - 2_certificate_and_profile
      - 3_provisioning_and_npm_installation
      - 4_A_xcode_build_and_test_Fennec
-  test_1:
-    envs:
-      - opts:
-          is_expand: false
-        SHARD: '1'
-    after_run:
-      - build_and_test_1
-  tests_2:
-    envs:
-      - opts:
-          is_expand: false
-        SHARD: '2'
-    after_run:
-      - build_and_test_2
   build_and_test_1:
      steps:
     - xcode-test@3.1:
