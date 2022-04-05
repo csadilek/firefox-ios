@@ -17,14 +17,80 @@ stages:
 workflows:
   configure_build:
     steps:
-    - deploy-to-bitrise-io@2: { }
-    before_run:
-     - 1_git_clone_and_post_clone
-     - 2_certificate_and_profile
-     - 3_provisioning_and_npm_installation
-     - 4_A_xcode_build_and_test_Fennec
+    #- deploy-to-bitrise-io@2: { }
+    #before_run:
+    # - 1_git_clone_and_post_clone
+    # - 2_certificate_and_profile
+    # - 3_provisioning_and_npm_installation
+    # - 4_A_xcode_build_and_test_Fennec
+    - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@6: {}
+    - cocoapods-install@2: {}
+    - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
+        title: Bitrise Test Plan Sharder
+        inputs:
+        - xcode_project: Client.xcodeproj
+        - target: XCUITests
+        - shards: '2'
+        - scheme: Fennec_Enterprise_XCUITests
+        - test_plan: SmokeXCUITests.xctestplan
+        - debug_mode: 'true'
+        - test_path: ''
+        - file_type: ".swift"
+    - script@1.1:
+        title: Build for Testing
+        inputs:
+        - content: |+
+            set -euxo pipefail
+            echo "-- build-for-testing --"
+            mkdir DerivedData
+                
+            xcodebuild \
+            -scheme "Fennec_Enterprise_XCUITests" \
+            -project "Client.xcworkspace" \
+            -sdk iphonesimulator \                
+            -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" \
+            -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" \
+            build-for-testing
+    - script@1.1:
+        title: Compress Derived Data
+        is_always_run: true
+        inputs:
+        - content: |
+            set -euxo pipefail
+            echo "-- compress --"
+                
+            exec zip -0 -qr \
+            "${BITRISE_SOURCE_DIR}/DerivedData.zip" \                   
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug-iphonesimulator/Client.app" \               
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug-iphonesimulator/XCUITests-Runner.app" \                  
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Client_Client_iphonesimulator13.5-x86_64.xctestrun" \
+            "$BITRISE_SOURCE_DIR/Client.xcodeproj" \
+            "$BITRISE_SOURCE_DIR/SmokeXCUITests.xctestplan" \
+            "$BITRISE_SOURCE_DIR/Smoketest2.xctestplan"
+      - deploy-to-bitrise-io@2:
+          inputs:
+            - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
   build_and_test_1:
     steps:
+    - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
+          title: Pull artifacts
+          inputs:
+            - verbose: true
+            - artifact_sources: stage_1.*
+    - script@1.1:
+        title: Unzip
+        inputs:
+        - content: |
+            set -euxo pipefail
+                
+            echo "$BITRISE_ARTIFACT_PATHS"
+                
+            echo "-- unzip -- "
+            exec unzip "${BITRISE_ARTIFACT_PATHS}"
+            echo "show dir"
+            ls
     - xcode-test@3.1:
         inputs:
         - scheme: Fennec_Enterprise_XCUITests
