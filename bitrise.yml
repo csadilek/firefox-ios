@@ -153,6 +153,6 @@ trigger_map:
 - pull_request_target_branch: main
   pipeline: pipeline_multiple_shards
 - push_branch: irios/test-bitrise-shards
-  pipelines: pipeline_multiple_shards
+  workflow: build_and_test_1
 - pull_request_target_branch: irios/test-bitrise-shards
-  pipelines: pipeline_multiple_shards
+  workflow: build_and_test_1
