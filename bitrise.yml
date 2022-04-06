@@ -44,7 +44,11 @@ workflows:
             echo "-- build-for-testing --"
             mkdir DerivedData
                 
-            xcodebuild -scheme "Fennec_Enterprise_XCUITests" -project "Client.xcodeproj" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build
+            xcodebuild -scheme "Fennec" -project "Client.xcodeproj" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build-for-testing CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            
+            echo "show files"
+            ls DerivedData/
+            ls DerivedData/Build/Products
     - script@1.1:
         title: Compress Derived Data
         is_always_run: true
@@ -53,14 +57,7 @@ workflows:
             set -euxo pipefail
             echo "-- compress --"
                 
-            exec zip -0 -qr \
-            "${BITRISE_SOURCE_DIR}/DerivedData.zip" \                   
-            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug-iphonesimulator/Client.app" \               
-            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug-iphonesimulator/XCUITests-Runner.app" \                  
-            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Client_Client_iphonesimulator13.5-x86_64.xctestrun" \
-            "$BITRISE_SOURCE_DIR/Client.xcodeproj" \
-            "$BITRISE_SOURCE_DIR/SmokeXCUITests.xctestplan" \
-            "$BITRISE_SOURCE_DIR/Smoketest2.xctestplan"
+            exec zip -0 -qr "${BITRISE_SOURCE_DIR}/DerivedData.zip" "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Fennec-iphonesimulator/Client.app" "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Fennec-iphonesimulator/XCUITests-Runner.app" "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Fennec_iphonesimulator15.0-x86_64.xctestrun" "$BITRISE_SOURCE_DIR/Client.xcodeproj" "$BITRISE_SOURCE_DIR/XCUITests/SmokeXCUITests.xctestplan" "$BITRISE_SOURCE_DIR/XCUITests/Smoketest2.xctestplan"
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
