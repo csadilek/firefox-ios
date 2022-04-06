@@ -44,7 +44,7 @@ workflows:
             echo "-- build-for-testing --"
             mkdir DerivedData
                 
-            xcodebuild -scheme "Fennec" -project "Client.xcodeproj" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build-for-testing CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            xcodebuild -scheme "Fennec" -project "Client.xcodeproj" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8" -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build-for-testing CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
             
             echo "show files"
             ls DerivedData/
@@ -98,6 +98,7 @@ workflows:
                 echo "-- test-without-building --"
 
                 xcodebuild -scheme Fennec_Enterprise_XCUITests -showdestinations
+                xcodebuild -scheme Fennec -showdestinations
 
                 #xcodebuild -showsdks
                 
@@ -105,7 +106,7 @@ workflows:
     - xcode-test@3.1:
         inputs:
         - scheme: Fennec_Enterprise_XCUITests
-        - xcodebuild_test_options: "-testPlan SmokeXCUITests"
+        - xcodebuild_test_options: "-testPlan SmokeXCUITests" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
     #- deploy-to-bitrise-io@2: { }
   build_and_test_2:
     steps:
@@ -143,7 +144,9 @@ workflows:
                 echo "-- test-without-building --"
                 xcrun simctl list
 
-                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform:iOS Simulator, id:43F9ECFC-C2F4-4CCF-9114-2AF75A036044, OS:15.0, name:iPhone 13" test-without-building
+                xcrun simctl create iPhone\ X "iPhone X"
+
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform=iOS Simulator,name=iPhone X" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO test-without-building
     #- xcode-test@3.1:
     #steps:
     #- xcode-test@3.1:
