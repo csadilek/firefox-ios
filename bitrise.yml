@@ -97,6 +97,8 @@ workflows:
                 
                 echo "-- test-without-building --"
 
+                xcodebuild -scheme Fennec_Enterprise_XCUITests -showdestinations
+
                 #xcodebuild -showsdks
                 
                 #xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 13" test
@@ -141,7 +143,7 @@ workflows:
                 echo "-- test-without-building --"
                 xcrun simctl list
 
-                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform=iOS Simulator,name=iPhone 12,OS=15.0" test-without-building
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform:iOS Simulator, id:43F9ECFC-C2F4-4CCF-9114-2AF75A036044, OS:15.0, name:iPhone 13" test-without-building
     #- xcode-test@3.1:
     #steps:
     #- xcode-test@3.1:
