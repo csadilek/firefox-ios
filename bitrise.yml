@@ -96,8 +96,10 @@ workflows:
                 #chmod 644 Smoketest2.xctestplan
                 
                 echo "-- test-without-building --"
+
+                xcodebuild -showsdks
                 
-                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 12,OS=latest" test-without-building
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 11,OS=latest" test-without-building
     #- xcode-test@3.1:
     #    inputs:
     #    - scheme: Fennec_Enterprise_XCUITests
@@ -1100,7 +1102,7 @@ app:
     BITRISE_BETA_VERSION: '99.0'
 meta:
       bitrise.io:
-        stack: osx-xcode-13.2.x
+        stack: osx-xcode-13.1.x
         machine_type_id: g2.4core
 trigger_map:
 - push_branch: main
