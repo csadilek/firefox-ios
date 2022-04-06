@@ -80,18 +80,73 @@ workflows:
             exec unzip "${BITRISE_ARTIFACT_PATHS}"
             echo "show dir"
             ls
-    - xcode-test@3.1:
-        inputs:
-        - scheme: Fennec_Enterprise_XCUITests
-        - xcodebuild_test_options: "-testPlan SmokeXCUITests"
-    - deploy-to-bitrise-io@2: { }
+    - script@1.1:
+          title: Test without Building
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex 
+                
+                ls -la
+                mv ./Users/vagrant/git/* .
+                ls -la
+                
+                #rm Smoketest2.xctestplan
+                #cp TestShard_$((SHARD-1)).xctestplan Smoketest2.xctestplan
+                #chmod 644 Smoketest2.xctestplan
+                
+                echo "-- test-without-building --"
+                
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" test-without-building
+    #- xcode-test@3.1:
+    #    inputs:
+    #    - scheme: Fennec_Enterprise_XCUITests
+    #    - xcodebuild_test_options: "-testPlan SmokeXCUITests"
+    #- deploy-to-bitrise-io@2: { }
   build_and_test_2:
     steps:
-    - xcode-test@3.1:
+    - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
+        title: Pull artifacts
         inputs:
-        - scheme: Fennec_Enterprise_XCUITests
-        - xcodebuild_test_options: "-testPlan Smoketest2"
-    - deploy-to-bitrise-io@2: { }
+        - verbose: true
+        - artifact_sources: stage_1.*
+    - script@1.1:
+        title: Unzip
+        inputs:
+        - content: |
+            set -euxo pipefail
+                
+            echo "$BITRISE_ARTIFACT_PATHS"
+                
+            echo "-- unzip -- "
+            exec unzip "${BITRISE_ARTIFACT_PATHS}"
+            echo "show dir"
+            ls
+    - script@1.1:
+          title: Test without Building
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex 
+                
+                ls -la
+                mv ./Users/vagrant/git/* .
+                ls -la
+                
+                #rm SmokeXCUITests.xctestplan
+                #cp TestShard_$((SHARD-1)).xctestplan Smoketest2.xctestplan
+                #chmod 644 Smoketest2.xctestplan
+                
+                echo "-- test-without-building --"
+                
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "SmokeXCUITests" -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" test-without-building
+    #- xcode-test@3.1:
+    #steps:
+    #- xcode-test@3.1:
+    #    inputs:
+    #    - scheme: Fennec_Enterprise_XCUITests
+    #    - xcodebuild_test_options: "-testPlan Smoketest2"
+    #- deploy-to-bitrise-io@2: { }
   1_git_clone_and_post_clone:
     steps:
     - activate-ssh-key@4:
