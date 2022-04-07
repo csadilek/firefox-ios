@@ -29,10 +29,10 @@ workflows:
         title: Bitrise Test Plan Sharder
         inputs:
         - xcode_project: Client.xcodeproj
-        #- target: XCUITests
+        - target: Client
         - shards: '2'
         - scheme: Fennec_Enterprise_XCUITests
-        #- test_plan: SmokeXCUITests.xctestplan
+        - test_plan: SmokeXCUITests.xctestplan
         - debug_mode: 'true'
         - test_path: ''
         - file_type: ".swift"
