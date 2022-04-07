@@ -44,7 +44,7 @@ workflows:
             echo "-- build-for-testing --"
             mkdir DerivedData
                 
-            xcodebuild -scheme "Fennec" -project "Client.xcodeproj" -destination "platform=iOS Simulator,name=iPhone 8" -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build-for-testing CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+            xcodebuild -scheme "Fennec" -project "Client.xcodeproj" -destination "platform=iOS Simulator,name=iPhone 8" -configuration debug -derivedDataPath "${BITRISE_SOURCE_DIR}/DerivedData" build-for-testing CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
             
             echo "show files"
             ls DerivedData/
@@ -102,7 +102,7 @@ workflows:
 
                 #xcodebuild -showsdks
                 
-                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 13" test
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -configuration debug -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 13" test
     - deploy-to-bitrise-io@2: { }
   build_and_test_2:
     steps:
