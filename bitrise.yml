@@ -25,17 +25,17 @@ workflows:
     steps:
     - activate-ssh-key@4:
         run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-    - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
-        title: Bitrise Test Plan Sharder
-        inputs:
-        - xcode_project: Client.xcodeproj
-        - target: XCUITests
-        - shards: '2'
-        - scheme: Fennec_Enterprise_XCUITests
-        - test_plan: SmokeXCUITests.xctestplan
-        - debug_mode: 'true'
-        - test_path: ''
-        - file_type: ".swift"
+    #- git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
+    #    title: Bitrise Test Plan Sharder
+    #    inputs:
+    #    - xcode_project: Client.xcodeproj
+    #    - target: XCUITests
+    #    - shards: '2'
+    #    - scheme: Fennec_Enterprise_XCUITests
+    #    - test_plan: SmokeXCUITests.xctestplan
+    #    - debug_mode: 'true'
+    #    - test_path: ''
+    #    - file_type: ".swift"
     - script@1.1:
         title: Build for Testing
         inputs:
@@ -102,12 +102,8 @@ workflows:
 
                 #xcodebuild -showsdks
                 
-                #xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 13" test
-    - xcode-test@3.1:
-        inputs:
-        - scheme: Fennec_Enterprise_XCUITests
-        - xcodebuild_test_options: "-testPlan SmokeXCUITests"
-    #- deploy-to-bitrise-io@2: { }
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec_Enterprise_XCUITests" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "Smoketest2" -destination "platform=iOS Simulator,name=iPhone 13" test
+    - deploy-to-bitrise-io@2: { }
   build_and_test_2:
     steps:
     - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
@@ -144,16 +140,14 @@ workflows:
                 echo "-- test-without-building --"
                 xcrun simctl list
 
-                xcrun simctl create iPhone\ X "iPhone X"
-
-                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform=iOS Simulator,name=iPhone X" test-without-building
+                xcodebuild -project "Client.xcodeproj" -scheme "Fennec" -sdk iphonesimulator -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -destination "platform=iOS Simulator,name=iPhone 11" test-without-building
     #- xcode-test@3.1:
     #steps:
     #- xcode-test@3.1:
     #    inputs:
     #    - scheme: Fennec_Enterprise_XCUITests
     #    - xcodebuild_test_options: "-testPlan Smoketest2"
-    #- deploy-to-bitrise-io@2: { }
+    - deploy-to-bitrise-io@2: { }
   1_git_clone_and_post_clone:
     steps:
     - activate-ssh-key@4:
