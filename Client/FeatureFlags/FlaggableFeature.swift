@@ -206,10 +206,8 @@ extension FlaggableFeature {
 
 func soakNimbus<T>(featureId: String, iterations: Int = 100_000, in file: String = #file, at lineno: Int = #line, creator: @escaping (Variables) -> T) {
     print("Start soaking \(featureId)")
-    let getNimbus = { Experiments.shared }
     for _ in 1..<iterations {
-        let holder = FeatureHolder<T>(getNimbus, featureId, creator)
-        _ = holder.value()
+        let _ = FxNimbus.shared.features.homescreen.value()
     }
     let lastSlash = file.lastIndex(of: "/") ?? file.startIndex
     let filename = file.suffix(from: lastSlash)
